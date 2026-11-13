@@ -1,0 +1,12 @@
+{
+  "name": "Monitoring Tahfidz",
+  "short_name": "Tahfidz",
+  "start_url": "./",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#022c22",
+  "theme_color": "#0f5132",
+  "icons": [
+    { "src": "icon.svg", "sizes": "any", "type": "image/svg+xml", "purpose": "any maskable" }
+  ]
+}
