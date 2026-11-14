@@ -616,7 +616,7 @@ if(e.key==="ArrowDown"&&n){e.preventDefault();window._pubHintIdx=(window._pubHin
 else if(e.key==="ArrowUp"&&n){e.preventDefault();window._pubHintIdx=(window._pubHintIdx-1+n)%n;updateHintFocus(hs);hs[window._pubHintIdx].scrollIntoView({block:"nearest"});}
 else if(e.key==="Enter"){var t=window._pubHintIdx>=0?hs[window._pubHintIdx]:hs[0];if(t){e.preventDefault();showPubDetail(t.getAttribute("data-id"));}}
 else if(e.key==="Escape"){if(window._pubSelected)clearPubDetail();else if(h)h.classList.remove("open");}});
-document.addEventListener("click",function(e){if(h&&!e.target.closest(".p2-search-wrap"))h.classList.remove("open");});
+if(!window._pubClickBound){window._pubClickBound=true;document.addEventListener("click",function(e){if(h&&!e.target.closest(".p2-search-wrap"))h.classList.remove("open");});}
 if(!_pubDocBound){_pubDocBound=true;document.addEventListener("keydown",function(e){var i=$("pubSearch");if(e.key==="/"&&i&&document.activeElement.tagName!=="INPUT"){e.preventDefault();i.focus();}});}}
 loadDB();
 try{var _s=sessionStorage.getItem("mit_alfalah_sess");if(_s)SESS=JSON.parse(_s);}catch(e){}
@@ -849,7 +849,7 @@ function resetCfg(){if(!confirm("Kembalikan semua pengaturan tampilan ke bawaan?
 function simpanCfg(){var g=function(i){return $(i).value.trim();};if(!g("cf_sekolah")){alert("Nama sekolah wajib.");return;}
 DB.cfg=Object.assign({},DB.cfg||{},{sekolah:g("cf_sekolah"),app:g("cf_app"),sub:g("cf_sub"),pubT1:g("cf_t1"),pubT2:g("cf_t2"),pubSub:g("cf_psub"),kecil:g("cf_kecil"),eyebrow:g("cf_eye"),warna:$("cf_warna").value,aksen:$("cf_aksen").value,hint:$("cf_hint").checked});
 var pa=$("cf_pa").value,pg=$("cf_pg").value;DB.users.forEach(function(u){if(u.u==="admin"&&pa)u.p=pa;if(u.u==="guru"&&pg)u.p=pg;});
-saveDB();applyCfg(DB.cfg);alert("Pengaturan tersimpan.");renderApp();}
+saveDB();try{localStorage.setItem(LSKEY+"_pubcfg",JSON.stringify(DB.cfg));}catch(e){}applyCfg(DB.cfg);alert("Pengaturan tersimpan.");renderApp();}
 function pageSetting(){if(!SESS||SESS.role!=="admin"){$("main").innerHTML='<h3 class="pt">Pengaturan</h3><div class="info-box">Hanya admin yang dapat membuka pengaturan.</div>';return;}
 var c=C();function F(id,l,v,ph){return'<div><label>'+l+'</label><input id="'+id+'" value="'+esc(v)+'" placeholder="'+esc(ph||"")+'"></div>';}
 var prev=c.logo?'<img src="'+c.logo+'" style="max-width:100%;max-height:100%;object-fit:contain">':'<span style="font-size:34px">&#128214;</span>';
@@ -872,7 +872,7 @@ applyCfg(DB.cfg||_pc);
 if(SESS)renderApp();else if($("lu"))renderLogin();else if($("pubResults"))renderPublic();
 fetchRemote(function(d){if(!d||!d.cfg)return;try{localStorage.setItem(LSKEY+"_pubcfg",JSON.stringify(d.cfg));}catch(e){}
 if(SESS){if(!DB.cfg){DB.cfg=d.cfg;saveDB();applyCfg(DB.cfg);renderApp();}}
-else if(JSON.stringify(mg(d.cfg))!==JSON.stringify(CUR)){applyCfg(d.cfg);if($("pubResults"))renderPublic();else if($("lu"))renderLogin();}});
+else if(JSON.stringify(mg(d.cfg))!==JSON.stringify(CUR)){applyCfg(d.cfg);if($("lu"))renderLogin();else{var _inp=$("pubSearch");var _focused=_inp&&document.activeElement===_inp;if($("pubResults")){renderPublic();if(_focused)setTimeout(function(){var i=$("pubSearch");if(i)i.focus();},0);}}}});
 
 /* ===== SPLASH INTRO ===== */
 (function(){
